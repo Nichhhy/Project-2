@@ -1,5 +1,8 @@
 import logo from "./logo.svg";
 import "./App.css";
+import Gmaps from "./Components/Gmaps";
+import axios from "axios";
+import Popup from "./Components/Popup";
 
 function App() {
   return (
@@ -17,6 +20,8 @@ function App() {
         >
           Learn React
         </a>
+
+        <Gmaps />
       </header>
     </div>
   );
