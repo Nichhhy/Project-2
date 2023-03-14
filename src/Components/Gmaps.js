@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import SVY21 from "./SVY21";
 import axios from "axios";
-import { onChildAdded, push, ref as databaseRef, set } from "firebase/database";
+import { onChildAdded, ref as databaseRef } from "firebase/database";
 import { database } from "../firebase";
-import "./Popup.css";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import { Outlet } from "react-router-dom";
 
 const DB_IMAGE_KEY = "Carparks";
 
@@ -20,6 +21,7 @@ export default function Gmaps() {
     lng: 103.763447,
   });
   const [currentCarpark, setCurrentCarpark] = useState([]);
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     const messagesRef = databaseRef(database, DB_IMAGE_KEY);
@@ -61,11 +63,9 @@ export default function Gmaps() {
   };
 
   const containerStyle = {
-    width: "1200px",
-    height: "800px",
+    width: "90vw",
+    height: "50vh",
   };
-
-  const [modal, setModal] = useState(false);
 
   const toggleModal = () => {
     setModal(!modal);
@@ -79,10 +79,7 @@ export default function Gmaps() {
 
   return (
     <div>
-      <button type="button" onClick={() => info()}>
-        click here
-      </button>
-      <LoadScript googleMapsApiKey={process.env.REACT_APP_API_KEY}>
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}>
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
           {carpark.map((cp) => (
             <Marker
@@ -95,30 +92,28 @@ export default function Gmaps() {
           ))}
         </GoogleMap>
       </LoadScript>
-
       {modal && (
-        <div className="modal">
-          <div onClick={toggleModal} className="overlay"></div>
-          <div className="modal-content">
-            <h2>Address : {currentCarpark.val.address}</h2>
-            <p>
-              Total Lots :{" "}
-              {carparkInfo[0].carpark_info[0].total_lots !== undefined
-                ? carparkInfo[0].carpark_info[0].total_lots
-                : null}
-            </p>
-            <p>
-              Lots Available :{" "}
-              {carparkInfo[0].carpark_info[0].lots_available !== undefined
-                ? carparkInfo[0].carpark_info[0].lots_available
-                : null}
-            </p>
-            <button className="close-modal" onClick={toggleModal}>
-              CLOSE
-            </button>
-          </div>
-        </div>
+        <Modal show={modal} onHide={toggleModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Address : {currentCarpark.val.address}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Total Lots :{" "}
+            {carparkInfo[0].carpark_info[0].total_lots !== undefined
+              ? carparkInfo[0].carpark_info[0].total_lots
+              : null}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={toggleModal}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={toggleModal}>
+              Favourite
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
+      <Outlet />
     </div>
   );
 }
