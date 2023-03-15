@@ -23,14 +23,11 @@ export default function Signup(props) {
   const [fileInputValue, setfileInputValue] = useState("");
   const navigate = useNavigate();
   const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
-
+  /* 
   useEffect(() => {
-    loggedInUser.isLoggedIn ? (
-      <Navigate to="/Gmap" />
-    ) : (
-      <Navigate to="/Signup" />
-    );
-  });
+    console.log(loggedInUser.isLoggedIn);
+    loggedInUser.isLoggedIn ? navigate("/") : navigate("/Signup");
+  }, [loggedInUser.isLoggedIn]); */
 
   const handleFileChange = (e) => {
     setFileInputFile(e.target.files[0]);

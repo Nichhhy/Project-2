@@ -33,7 +33,7 @@ export default function Login(props) {
 
         if (errorCode === "auth/invalid-email") alert("Please sign up!");
       });
-    navigate("/");
+    navigate("/gmap");
   };
 
   return (

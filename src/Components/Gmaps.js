@@ -99,9 +99,9 @@ export default function Gmaps() {
           </Modal.Header>
           <Modal.Body>
             Total Lots :{" "}
-            {carparkInfo[0].carpark_info[0].total_lots !== undefined
-              ? carparkInfo[0].carpark_info[0].total_lots
-              : null}
+            {carparkInfo.length /* [0].carpark_info[0].total_lots */ === 0
+              ? "No Lots avaialble"
+              : carparkInfo[0].carpark_info[0].total_lots}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={toggleModal}>
