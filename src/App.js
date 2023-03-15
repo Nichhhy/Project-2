@@ -5,7 +5,7 @@ import Gmaps from "./Components/Gmaps";
 import Login from "./Components/Login";
 import { auth } from "./firebase";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import Signup from "./Components/Signup";
@@ -39,10 +39,21 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />}>
             <Route path="Gmap" element={<Gmaps />} />
-            <Route path="Signup" element={<Signup />} />
+            <Route
+              path="Signup"
+              element={
+                loggedInUser.isLoggedIn ? <Navigate to="/" /> : <Signup />
+              }
+            />
             <Route
               path="Login"
-              element={<Login isLoggedIn={loggedInUser.isLoggedIn} />}
+              element={
+                loggedInUser.isLoggedIn ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Login isLoggedIn={loggedInUser.isLoggedIn} />
+                )
+              }
             />
             <Route path="Edit" element={<EditProfile />} />
           </Route>
