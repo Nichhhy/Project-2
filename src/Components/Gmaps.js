@@ -58,6 +58,7 @@ export default function Gmaps() {
       .then(() => {
         setCenter(cp.position);
         setCurrentCarpark(cp);
+        console.log(cp);
       })
       .then(() => toggleModal());
   };
