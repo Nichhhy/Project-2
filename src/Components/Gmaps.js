@@ -1,12 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import SVY21 from "./SVY21";
 import axios from "axios";
-import { onChildAdded, ref as databaseRef } from "firebase/database";
+import {
+  onChildAdded,
+  ref as databaseRef,
+  remove,
+  set,
+  update,
+} from "firebase/database";
 import { database } from "../firebase";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { Outlet } from "react-router-dom";
+import { LoginInfo } from "../App";
 
 const DB_IMAGE_KEY = "Carparks";
 
@@ -22,6 +29,8 @@ export default function Gmaps() {
   });
   const [currentCarpark, setCurrentCarpark] = useState([]);
   const [modal, setModal] = useState(false);
+
+  const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
 
   useEffect(() => {
     const messagesRef = databaseRef(database, DB_IMAGE_KEY);
@@ -60,6 +69,61 @@ export default function Gmaps() {
         setCurrentCarpark(cp);
       })
       .then(() => toggleModal());
+  };
+
+  const addFavourite = () => {
+    console.log(currentCarpark.val.car_park_no);
+    loggedInUser.favs === null
+      ? set(databaseRef(database, "users/" + loggedInUser.userID), {
+          favourites: [currentCarpark.val.car_park_no],
+        })
+          .then(() => {
+            console.log("done with adding");
+
+            setLoggedInUser({
+              ...loggedInUser,
+              favs: [currentCarpark.val.car_park_no],
+            });
+          })
+          .then(() => {
+            console.log(loggedInUser.favs);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      : set(databaseRef(database, "users/" + loggedInUser.userID), {
+          favourites: [...loggedInUser.favs, currentCarpark.val.car_park_no],
+        })
+          .then(() => {
+            console.log("done with adding");
+
+            setLoggedInUser({
+              ...loggedInUser,
+              favs: [...loggedInUser.favs, currentCarpark.val.car_park_no],
+            });
+          })
+          .then(() => {
+            console.log(loggedInUser.favs);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+  };
+
+  const removeFav = () => {
+    const tasksRef = databaseRef(
+      database,
+      "users/" + loggedInUser.userID + "/favourites"
+    );
+
+    const newArrOfFavs = loggedInUser.favs.filter(
+      (item) => item !== currentCarpark.val.car_park_no
+    );
+    set(tasksRef, newArrOfFavs);
+    setLoggedInUser({
+      ...loggedInUser,
+      favs: newArrOfFavs,
+    });
   };
 
   const containerStyle = {
@@ -107,9 +171,28 @@ export default function Gmaps() {
             <Button variant="secondary" onClick={toggleModal}>
               Close
             </Button>
-            <Button variant="primary" onClick={toggleModal}>
-              Favourite
-            </Button>
+            {loggedInUser.favs === null ||
+            loggedInUser.favs.filter(
+              (item) => item === currentCarpark.val.car_park_no
+            ).length < 1 ? (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  addFavourite();
+                }}
+              >
+                Favourite
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  removeFav();
+                }}
+              >
+                Remove Favourite
+              </Button>
+            )}
           </Modal.Footer>
         </Modal>
       )}
