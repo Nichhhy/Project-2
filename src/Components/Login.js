@@ -1,17 +1,10 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { Button, Card, Form } from "react-bootstrap";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 import { Outlet, useNavigate, Navigate } from "react-router-dom";
 import { LoginInfo } from "../App";
-import {
-  get,
-  onChildAdded,
-  push,
-  ref as databaseRef,
-  set,
-  onValue,
-} from "firebase/database";
+import { ref as databaseRef, onValue } from "firebase/database";
 import { database, auth } from "../firebase";
 
 export default function Login(props) {

@@ -13,14 +13,7 @@ import HomePage from "./Components/HomePage";
 import EditProfile from "./Components/EditProfile";
 
 import { database } from "./firebase";
-import {
-  get,
-  onChildAdded,
-  push,
-  ref as databaseRef,
-  set,
-  onValue,
-} from "firebase/database";
+import { ref as databaseRef, onValue } from "firebase/database";
 
 export const LoginInfo = createContext(null);
 
@@ -54,19 +47,6 @@ function App() {
       }
     });
   }, []);
-
-  const storeFav = (uid) => {
-    const messagesRef = databaseRef(database, "users/" + uid + "/favourites");
-    // onChildAdded will return data for every child at the reference and every subsequent new child
-    onChildAdded(messagesRef, (data) => {
-      // Add the subsequent child to local component state, initialising a new array to trigger re-render
-
-      setLoggedInUser({
-        ...loggedInUser,
-        favs: [...loggedInUser.favs, data._node.value_],
-      });
-    });
-  };
 
   return (
     <LoginInfo.Provider value={{ loggedInUser, setLoggedInUser }}>

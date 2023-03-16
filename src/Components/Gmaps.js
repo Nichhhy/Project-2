@@ -2,13 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import SVY21 from "./SVY21";
 import axios from "axios";
-import {
-  onChildAdded,
-  ref as databaseRef,
-  remove,
-  set,
-  update,
-} from "firebase/database";
+import { onChildAdded, ref as databaseRef, set } from "firebase/database";
 import { database } from "../firebase";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
@@ -72,21 +66,15 @@ export default function Gmaps() {
   };
 
   const addFavourite = () => {
-    console.log(currentCarpark.val.car_park_no);
     loggedInUser.favs === null
       ? set(databaseRef(database, "users/" + loggedInUser.userID), {
           favourites: [currentCarpark.val.car_park_no],
         })
           .then(() => {
-            console.log("done with adding");
-
             setLoggedInUser({
               ...loggedInUser,
               favs: [currentCarpark.val.car_park_no],
             });
-          })
-          .then(() => {
-            console.log(loggedInUser.favs);
           })
           .catch((error) => {
             console.log(error);
@@ -95,15 +83,10 @@ export default function Gmaps() {
           favourites: [...loggedInUser.favs, currentCarpark.val.car_park_no],
         })
           .then(() => {
-            console.log("done with adding");
-
             setLoggedInUser({
               ...loggedInUser,
               favs: [...loggedInUser.favs, currentCarpark.val.car_park_no],
             });
-          })
-          .then(() => {
-            console.log(loggedInUser.favs);
           })
           .catch((error) => {
             console.log(error);
