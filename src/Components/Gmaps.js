@@ -1,19 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { LoginInfo } from "../App";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import SVY21 from "./SVY21";
 import axios from "axios";
-import { onChildAdded, ref as databaseRef } from "firebase/database";
+import {
+  onChildAdded,
+  ref as databaseRef,
+  push,
+  set,
+  update,
+  ref,
+  child,
+  get,
+} from "firebase/database";
 import { database } from "../firebase";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { Outlet } from "react-router-dom";
 
 const DB_IMAGE_KEY = "Carparks";
+const DB_USER_FAVES_KEY = "Favorites";
 
 export default function Gmaps() {
   // Initialization
   var cv = new SVY21();
-
+  const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
   const [carpark, setCarpark] = useState([]);
   const [carparkInfo, setCarparkInfo] = useState([]);
   const [center, setCenter] = useState({
@@ -22,6 +33,10 @@ export default function Gmaps() {
   });
   const [currentCarpark, setCurrentCarpark] = useState([]);
   const [modal, setModal] = useState(false);
+  const [currentFaves, setCurrentFaves] = useState([
+    "dummy data 1",
+    "dummy data 2",
+  ]);
 
   useEffect(() => {
     const messagesRef = databaseRef(database, DB_IMAGE_KEY);
@@ -58,7 +73,6 @@ export default function Gmaps() {
       .then(() => {
         setCenter(cp.position);
         setCurrentCarpark(cp);
-        console.log(cp);
       })
       .then(() => toggleModal());
   };
@@ -71,6 +85,66 @@ export default function Gmaps() {
   const toggleModal = () => {
     setModal(!modal);
   };
+
+  const addFave = (carparkKey) => {
+    setCurrentFaves((faves) => [...faves, carparkKey]);
+  };
+
+  useEffect(() => {
+    console.log(currentFaves);
+  }, [currentFaves]);
+
+  const saveFavorites = () => {
+    let userEmail = loggedInUser.email;
+    const favouriteList = databaseRef(
+      database,
+      DB_USER_FAVES_KEY + { userEmail }
+    );
+    const newFavoriteRef = push(favouriteList);
+    update(newFavoriteRef, {
+      user: loggedInUser.email,
+      favorites: currentFaves,
+    });
+  };
+
+  // const saveFavorites = () => {
+  //   const reference = ref(database, DB_USER_FAVES_KEY);
+
+  //   set(reference, {
+  //     user: { email: loggedInUser.email, faves: currentFaves },
+  //   });
+  // };
+
+  const readInfo = () => {
+    const dbRef = ref(database);
+    get(child(dbRef, `Favorites/NQcO794tTe1OS7564iO`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  function writeNewPost(email) {
+    // A post entry.
+    const postData = {
+      email: email,
+    };
+
+    // Get a key for a new Post.
+    const newPostKey = push(child(ref(database), DB_USER_FAVES_KEY)).key;
+
+    // Write the new post's data simultaneously in the posts list and the user's post list.
+    const updates = {};
+    updates["/Favorites/" + newPostKey] = postData;
+
+    return update(ref(database), updates);
+  }
 
   if (modal) {
     document.body.classList.add("active-modal");
@@ -100,15 +174,20 @@ export default function Gmaps() {
           </Modal.Header>
           <Modal.Body>
             Total Lots :{" "}
-            {carparkInfo[0].carpark_info[0].total_lots !== undefined
-              ? carparkInfo[0].carpark_info[0].total_lots
-              : null}
+            {carparkInfo.length /* [0].carpark_info[0].total_lots */ === 0
+              ? "No Lots available"
+              : carparkInfo[0].carpark_info[0].total_lots}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={toggleModal}>
               Close
             </Button>
-            <Button variant="primary" onClick={toggleModal}>
+            <Button
+              variant="primary"
+              onClick={() => {
+                readInfo();
+              }}
+            >
               Favourite
             </Button>
           </Modal.Footer>

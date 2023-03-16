@@ -19,6 +19,7 @@ function App() {
     isLoggedIn: false,
     displayName: "",
     photoURL: "",
+    email: "",
   });
 
   useEffect(() => {
@@ -28,6 +29,7 @@ function App() {
           isLoggedIn: true,
           displayName: auth.currentUser.displayName,
           photoURL: auth.currentUser.photoURL,
+          email: auth.currentUser.email,
         });
       }
     });
