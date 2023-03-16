@@ -14,6 +14,11 @@ import EditProfile from "./Components/EditProfile";
 
 export const LoginInfo = createContext(null);
 
+function RequireAuth({ children, redirectTo, state }) {
+  const isAuthenticated = state; // change this implementation
+  return isAuthenticated ? children : <Navigate to={redirectTo} />;
+}
+
 function App() {
   const [loggedInUser, setLoggedInUser] = useState({
     isLoggedIn: false,
@@ -42,7 +47,10 @@ function App() {
             <Route
               path="Signup"
               element={
-                loggedInUser.isLoggedIn ? <Navigate to="/" /> : <Signup />
+                <RequireAuth redirectTo="/" state={loggedInUser.isLoggedIn}>
+                  <Signup />
+                </RequireAuth>
+                /* loggedInUser.isLoggedIn ? <Navigate to="/" /> : <Signup /> */
               }
             />
             <Route
