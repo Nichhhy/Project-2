@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -14,8 +16,6 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,4 +43,17 @@
 
 .headerImg {
   margin-right: 10px;
+}
+
+.navbar-logo {
+  border-radius: 10px;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  border-radius: 50px;
+  justify-content: center;
+  border-color: #e73c3e;
 }

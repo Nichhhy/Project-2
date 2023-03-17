@@ -4,6 +4,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import { Outlet, useNavigate, Navigate } from "react-router-dom";
 import { LoginInfo } from "../App";
+import logo from "../logo.png";
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
@@ -45,14 +46,9 @@ export default function Login(props) {
           backgroundColor: "#6e6e6e",
         }}
       >
-        <Card.Body>
-          <Card.Title>Sign In</Card.Title>
-          <Card.Text>Sign in with email and password</Card.Text>
-        </Card.Body>
+        <Card.Img variant="top" src={logo} />
       </Card>
       <Form.Group>
-        {/* <Form.Label>Sign in!</Form.Label> */}
-
         <Form.Control
           type="text"
           name="email"
