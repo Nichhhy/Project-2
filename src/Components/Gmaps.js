@@ -10,11 +10,12 @@ import { Outlet } from "react-router-dom";
 import { LoginInfo } from "../App";
 
 const DB_IMAGE_KEY = "Carparks";
+const DB_USER_FAVES_KEY = "Favorites";
 
 export default function Gmaps() {
   // Initialization
   var cv = new SVY21();
-
+  const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
   const [carpark, setCarpark] = useState([]);
   const [carparkInfo, setCarparkInfo] = useState([]);
   const [center, setCenter] = useState({
@@ -23,6 +24,10 @@ export default function Gmaps() {
   });
   const [currentCarpark, setCurrentCarpark] = useState([]);
   const [modal, setModal] = useState(false);
+  const [currentFaves, setCurrentFaves] = useState([
+    "dummy data 1",
+    "dummy data 2",
+  ]);
 
   const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
 
@@ -117,6 +122,66 @@ export default function Gmaps() {
   const toggleModal = () => {
     setModal(!modal);
   };
+
+  const addFave = (carparkKey) => {
+    setCurrentFaves((faves) => [...faves, carparkKey]);
+  };
+
+  useEffect(() => {
+    console.log(currentFaves);
+  }, [currentFaves]);
+
+  const saveFavorites = () => {
+    let userEmail = loggedInUser.email;
+    const favouriteList = databaseRef(
+      database,
+      DB_USER_FAVES_KEY + { userEmail }
+    );
+    const newFavoriteRef = push(favouriteList);
+    update(newFavoriteRef, {
+      user: loggedInUser.email,
+      favorites: currentFaves,
+    });
+  };
+
+  // const saveFavorites = () => {
+  //   const reference = ref(database, DB_USER_FAVES_KEY);
+
+  //   set(reference, {
+  //     user: { email: loggedInUser.email, faves: currentFaves },
+  //   });
+  // };
+
+  const readInfo = () => {
+    const dbRef = ref(database);
+    get(child(dbRef, `Favorites/NQcO794tTe1OS7564iO`))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  function writeNewPost(email) {
+    // A post entry.
+    const postData = {
+      email: email,
+    };
+
+    // Get a key for a new Post.
+    const newPostKey = push(child(ref(database), DB_USER_FAVES_KEY)).key;
+
+    // Write the new post's data simultaneously in the posts list and the user's post list.
+    const updates = {};
+    updates["/Favorites/" + newPostKey] = postData;
+
+    return update(ref(database), updates);
+  }
 
   if (modal) {
     document.body.classList.add("active-modal");

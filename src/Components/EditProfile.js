@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Card } from "react-bootstrap";
 import { updateProfile } from "firebase/auth";
 import {
   getDownloadURL,
@@ -9,6 +9,7 @@ import {
 import { auth, storage } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { LoginInfo } from "../App";
+import logo from "../updateProfile.png";
 const STORAGE_FILE_KEY = "images";
 
 export default function EditProfile() {
@@ -50,8 +51,17 @@ export default function EditProfile() {
 
   return (
     <div>
+      <Card
+        style={{
+          width: "22rem",
+          color: "#1c1c1c",
+          backgroundColor: "#6e6e6e",
+        }}
+      >
+        <Card.Img variant="top" src={logo} />
+      </Card>
       <Form.Group>
-        <Form.Label>Set New Display Name/ Profile Picture</Form.Label>
+        {/* <Form.Label>Set New Display Name/ Profile Picture</Form.Label> */}
         <Form.Control
           type="text"
           name="displayName"

@@ -6,6 +6,7 @@ import { LoginInfo } from "../App";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import logo from "../logo.png";
 
 export default function NavHeader() {
   const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
@@ -24,7 +25,9 @@ export default function NavHeader() {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
-        <Navbar.Brand href="/">Find a Carpark</Navbar.Brand>
+        <Navbar.Brand href="/">
+          <img src={logo} height="40" className="navbar-logo" />
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         {loggedInUser.isLoggedIn ? (
           <Navbar.Text className="justify-content-end">

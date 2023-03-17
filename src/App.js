@@ -22,13 +22,16 @@ function App() {
     isLoggedIn: false,
     displayName: "",
     photoURL: "",
+
     userID: "",
     favs: [],
+
   });
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
+
         const messagesRef = databaseRef(
           database,
           "users/" + user.uid + "/favourites"
@@ -43,6 +46,7 @@ function App() {
             userID: user.uid,
             favs: data,
           });
+
         });
       }
     });

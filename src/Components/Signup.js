@@ -10,7 +10,11 @@ import { auth, storage, database } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useContext } from "react";
 import { LoginInfo } from "../App";
+
+import logo from "../logo.png";
+
 import { ref as databaseRef, set, onValue } from "firebase/database";
+
 
 const STORAGE_FILE_KEY = "images";
 
@@ -114,12 +118,9 @@ export default function Signup(props) {
           backgroundColor: "#242424",
         }}
       >
+        <Card.Img variant="top" src={logo} />
         <Card.Body>
-          <Card.Title>Sign Up</Card.Title>
-          <Card.Text>
-            Please input your Username, email and password to sign up (Profile
-            Picture optional)
-          </Card.Text>
+          <Card.Text>Profile Picture optional</Card.Text>
         </Card.Body>
       </Card>
 
