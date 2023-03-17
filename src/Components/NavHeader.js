@@ -30,17 +30,20 @@ export default function NavHeader() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         {loggedInUser.isLoggedIn ? (
-          <Navbar.Text className="justify-content-end">
-            <img
-              alt="profilePic"
-              className="headerImg"
-              src={loggedInUser.photoURL}
-              width="30"
-              height="30"
-            />
-            Welcome: {loggedInUser.displayName}
+          <div>
+            {" "}
+            <Navbar.Text className="justify-content-end">
+              <img
+                alt="profilePic"
+                className="headerImg"
+                src={loggedInUser.photoURL}
+                width="30"
+                height="30"
+              />
+              Welcome: {loggedInUser.displayName}
+            </Navbar.Text>
             <Nav.Link href="/Edit">Edit Profile</Nav.Link>
-          </Navbar.Text>
+          </div>
         ) : null}
 
         <Navbar.Collapse id="responsive-navbar-nav">
