@@ -1,17 +1,20 @@
 import { Button, Card, Form } from "react-bootstrap";
-import { useState, useEffect } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   getDownloadURL,
   ref as storageRef,
   uploadBytes,
 } from "firebase/storage";
-
-import { auth, storage } from "../firebase";
+import { auth, storage, database } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useContext } from "react";
 import { LoginInfo } from "../App";
+
 import logo from "../logo.png";
+
+import { ref as databaseRef, set, onValue } from "firebase/database";
+
 
 const STORAGE_FILE_KEY = "images";
 
@@ -24,14 +27,6 @@ export default function Signup(props) {
   const [fileInputValue, setfileInputValue] = useState("");
   const navigate = useNavigate();
   const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
-
-  useEffect(() => {
-    loggedInUser.isLoggedIn ? (
-      <Navigate to="/Gmap" />
-    ) : (
-      <Navigate to="/Signup" />
-    );
-  });
 
   const handleFileChange = (e) => {
     setFileInputFile(e.target.files[0]);
@@ -47,26 +42,49 @@ export default function Signup(props) {
           displayName: displayName,
           photoURL: url,
         });
-      })
-      .then(() => {
-        setLoggedInUser({
-          isLoggedIn: true,
-          displayName: displayName,
-          photoURL: url,
+
+        const messagesRef = databaseRef(
+          database,
+          "users/" + userCredential.user.uid + "/favourites"
+        );
+        onValue(messagesRef, (snapshot) => {
+          const data = snapshot.val();
+
+          setLoggedInUser({
+            isLoggedIn: true,
+            displayName: displayName,
+            photoURL: url,
+            userID: userCredential.user.uid,
+            favs: data,
+          });
         });
       })
-
+      .then(() => {
+        writeInDb();
+      })
       .then(() => {
         alert("Congrats! Thank you for signing up!");
+        navigate("/Gmap");
       })
+
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        navigate("/Signup");
 
         if (errorCode === "auth/email-already-in-use")
           alert("You have already signed up before! Please sign in!");
       });
-    navigate("/Gmap");
+  };
+
+  const writeInDb = () => {
+    set(databaseRef(database, "users/" + loggedInUser.userID), {
+      displayName: email,
+      favourites: [],
+    }).catch((error) => {
+      console.log(error);
+      navigate("/Signup");
+    });
   };
 
   const handleSubmit = (e) => {
