@@ -6,7 +6,6 @@ import { onChildAdded, ref as databaseRef, set } from "firebase/database";
 import { database } from "../firebase";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import { Outlet } from "react-router-dom";
 import { LoginInfo } from "../App";
 
 const DB_IMAGE_KEY = "Carparks";
@@ -63,27 +62,49 @@ export default function Gmaps() {
       .then(() => toggleModal());
   };
 
-  const addFavourite = () => {
+  const addFavourite = (cpAddress) => {
     loggedInUser.favs === null
       ? set(databaseRef(database, "users/" + loggedInUser.userID), {
-          favourites: [currentCarpark.val.car_park_no],
+          favourites: [
+            {
+              address: cpAddress,
+              cp_no: currentCarpark.val.car_park_no,
+            },
+          ],
         })
           .then(() => {
             setLoggedInUser({
               ...loggedInUser,
-              favs: [currentCarpark.val.car_park_no],
+              favs: [
+                {
+                  address: cpAddress,
+                  cp_no: currentCarpark.val.car_park_no,
+                },
+              ],
             });
           })
           .catch((error) => {
             console.log(error);
           })
       : set(databaseRef(database, "users/" + loggedInUser.userID), {
-          favourites: [...loggedInUser.favs, currentCarpark.val.car_park_no],
+          favourites: [
+            ...loggedInUser.favs,
+            {
+              address: cpAddress,
+              cp_no: currentCarpark.val.car_park_no,
+            },
+          ],
         })
           .then(() => {
             setLoggedInUser({
               ...loggedInUser,
-              favs: [...loggedInUser.favs, currentCarpark.val.car_park_no],
+              favs: [
+                ...loggedInUser.favs,
+                {
+                  address: cpAddress,
+                  cp_no: currentCarpark.val.car_park_no,
+                },
+              ],
             });
           })
           .catch((error) => {
@@ -98,7 +119,7 @@ export default function Gmaps() {
     );
 
     const newArrOfFavs = loggedInUser.favs.filter(
-      (item) => item !== currentCarpark.val.car_park_no
+      (item) => item.cp_no !== currentCarpark.val.car_park_no
     );
     set(tasksRef, newArrOfFavs);
     setLoggedInUser({
@@ -154,12 +175,12 @@ export default function Gmaps() {
             </Button>
             {loggedInUser.favs === null ||
             loggedInUser.favs.filter(
-              (item) => item === currentCarpark.val.car_park_no
+              (item) => item.cp_no === currentCarpark.val.car_park_no
             ).length < 1 ? (
               <Button
                 variant="primary"
                 onClick={() => {
-                  addFavourite();
+                  addFavourite(currentCarpark.val.address);
                 }}
               >
                 Favourite
