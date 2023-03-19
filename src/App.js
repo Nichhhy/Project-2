@@ -14,6 +14,8 @@ import EditProfile from "./Components/EditProfile";
 
 import { database } from "./firebase";
 import { ref as databaseRef, onValue } from "firebase/database";
+import { Navbar } from "react-bootstrap";
+import NavHeader from "./Components/NavHeader";
 
 export const LoginInfo = createContext(null);
 
@@ -25,13 +27,11 @@ function App() {
 
     userID: "",
     favs: [],
-
   });
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-
         const messagesRef = databaseRef(
           database,
           "users/" + user.uid + "/favourites"
@@ -46,7 +46,6 @@ function App() {
             userID: user.uid,
             favs: data,
           });
-
         });
       }
     });
@@ -55,6 +54,7 @@ function App() {
   return (
     <LoginInfo.Provider value={{ loggedInUser, setLoggedInUser }}>
       <BrowserRouter>
+        <NavHeader />
         <Routes>
           <Route path="/" element={<HomePage />}>
             <Route path="Gmap" element={<Gmaps />} />

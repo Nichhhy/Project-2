@@ -8,7 +8,6 @@ import guide2 from "../guide2.png";
 export default function HomePage() {
   return (
     <div className="App">
-      <NavHeader />
       <header className="App-header">
         <Container className="cards">
           <Card

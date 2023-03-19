@@ -2,13 +2,12 @@ import { useState, useContext } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-import { Outlet, useNavigate, Navigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { LoginInfo } from "../App";
 import logo from "../logo.png";
 
 import { ref as databaseRef, onValue } from "firebase/database";
 import { database, auth } from "../firebase";
-
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
@@ -39,7 +38,6 @@ export default function Login(props) {
 
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
 
         if (errorCode === "auth/invalid-email") alert("Please sign up!");
       });

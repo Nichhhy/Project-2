@@ -14,7 +14,10 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.navProfile {
+  display: flex;
+  justify-content: center;
+}
 .App-header {
   display: flex;
   flex-direction: column;
@@ -37,8 +40,8 @@
   }
 }
 
-.navbar-text {
-  width: 100%;
+.nav-link {
+  text-align: center;
 }
 
 .headerImg {
@@ -47,6 +50,9 @@
 
 .navbar-logo {
   border-radius: 10px;
+}
+.navbar-collapse {
+  flex-grow: 0 !important;
 }
 
 .cards {
