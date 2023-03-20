@@ -14,7 +14,6 @@ import EditProfile from "./Components/EditProfile";
 
 import { database } from "./firebase";
 import { ref as databaseRef, onValue } from "firebase/database";
-import { Navbar } from "react-bootstrap";
 import NavHeader from "./Components/NavHeader";
 
 export const LoginInfo = createContext(null);

@@ -1,44 +1,97 @@
-import { useState, useEffect } from "react";
-import { onChildAdded, ref } from "firebase/database";
-import { Outlet } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { ref as databaseRef, set } from "firebase/database";
 import { database } from "../firebase";
+import { LoginInfo } from "../App";
+import { Card, Button, Modal } from "react-bootstrap";
+import axios from "axios";
 
 const DB_USER_FAVES_KEY = "Favorites";
 
 export default function Favorites() {
-  const [favorites, setFavorites] = useState([]);
+  const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
+  const [show, setShow] = useState(false);
+  const [currentCarpark, setCurrentCarpark] = useState();
+  const [freeLots, setFreeLots] = useState("");
 
-  useEffect(() => {
-    const favoriteRef = ref(database, DB_USER_FAVES_KEY);
-    onChildAdded(favoriteRef, (data) => {
-      setFavorites((previous) => [
-        ...previous,
-        { key: data.key, val: data.val() },
-      ]);
+  const handleClose = () => {
+    setCurrentCarpark("");
+    setFreeLots("");
+    setShow(false);
+  };
+
+  const handleShow = (faves) => {
+    setCurrentCarpark(faves);
+    info(faves.cp_no);
+    setShow(true);
+  };
+
+  const info = (cp) => {
+    axios
+      .get(`https://api.data.gov.sg/v1/transport/carpark-availability`)
+      .then((response) => {
+        let tempLots = [...response.data.items[0].carpark_data].filter(
+          (item) => item.carpark_number === cp
+        );
+        setFreeLots(tempLots[0].carpark_info[0].lots_available);
+      });
+  };
+
+  const removeFav = () => {
+    const tasksRef = databaseRef(
+      database,
+      "users/" + loggedInUser.userID + "/favourites"
+    );
+
+    const newArrOfFavs = loggedInUser.favs.filter(
+      (item) => item.cp_no !== currentCarpark.cp_no
+    );
+    set(tasksRef, newArrOfFavs);
+    setLoggedInUser({
+      ...loggedInUser,
+      favs: newArrOfFavs,
     });
-  }, []);
-
-  let favoritesListItems = favorites.map((faves) => (
-    <div key={faves.key}>
-      <div>{faves.val.user}</div>
-      {/* <div>{faves.val.favorites}.</div> */}
-      {console.log(favorites)}
-      {console.log(favorites[0].val)}
-
-      {faves.val.favorites.map((data) => {
-        <div>{faves.val.favorites.data}</div>;
-      })}
-    </div>
-  ));
+    handleClose();
+  };
 
   return (
-    <div>
-      {favoritesListItems}
-      <Outlet />
-    </div>
+    <>
+      {loggedInUser.favs.map((faves) => (
+        <Card
+          onClick={() => {
+            handleShow(faves);
+          }}
+          key={faves.cp_no}
+          style={{ width: "18rem" }}
+          bg="success"
+        >
+          {" "}
+          <Card.Body>
+            <Card.Title>{faves.address}</Card.Title>
+          </Card.Body>
+        </Card>
+      ))}
+
+      {show && (
+        <Modal show={show} onHide={handleClose} animation={false} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>{currentCarpark.address}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Lots available: {freeLots}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                removeFav();
+              }}
+            >
+              Remove from favorites
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+    </>
   );
 }
-
-// create another place to store
-// Stores user info
-// Stores an array of carpark IDs that have been favorited
