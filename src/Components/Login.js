@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { Button, Card, Form } from "react-bootstrap";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
-import { Outlet, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LoginInfo } from "../App";
 import logo from "../logo.png";
 

@@ -13,7 +13,7 @@ import { LoginInfo } from "../App";
 
 import logo from "../logo.png";
 
-import { ref as databaseRef, set, onValue } from "firebase/database";
+import { ref as databaseRef, onValue } from "firebase/database";
 
 const STORAGE_FILE_KEY = "images";
 
