@@ -1,44 +1,125 @@
-import React, { useState } from "react";
-import "./Popup.css";
+import React from "react";
+import { useContext } from "react";
+import { database } from "../firebase";
+import { LoginInfo } from "../App";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
-export default function Modal() {
-  const [modal, setModal] = useState(false);
+import { ref as databaseRef, set } from "firebase/database";
 
-  const toggleModal = () => {
-    setModal(!modal);
+export default function Popup(props) {
+  const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
+
+  const addFavourite = (cpAddress) => {
+    loggedInUser.favs === null
+      ? set(databaseRef(database, "users/" + loggedInUser.userID), {
+          favourites: [
+            {
+              address: cpAddress,
+              cp_no: props.currentCarparkPropNo,
+            },
+          ],
+        })
+          .then(() => {
+            setLoggedInUser({
+              ...loggedInUser,
+              favs: [
+                {
+                  address: cpAddress,
+                  cp_no: props.currentCarparkPropNo,
+                },
+              ],
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      : set(databaseRef(database, "users/" + loggedInUser.userID), {
+          favourites: [
+            ...loggedInUser.favs,
+            {
+              address: cpAddress,
+              cp_no: props.currentCarparkPropNo,
+            },
+          ],
+        })
+          .then(() => {
+            setLoggedInUser({
+              ...loggedInUser,
+              favs: [
+                ...loggedInUser.favs,
+                {
+                  address: cpAddress,
+                  cp_no: props.currentCarparkPropNo,
+                },
+              ],
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
   };
 
-  if (modal) {
-    document.body.classList.add("active-modal");
-  } else {
-    document.body.classList.remove("active-modal");
-  }
+  const removeFav = () => {
+    const tasksRef = databaseRef(
+      database,
+      "users/" + loggedInUser.userID + "/favourites"
+    );
+
+    const newArrOfFavs = loggedInUser.favs.filter(
+      (item) => item.cp_no !== props.currentCarparkPropNo
+    );
+    set(tasksRef, newArrOfFavs);
+    setLoggedInUser({
+      ...loggedInUser,
+      favs: newArrOfFavs,
+    });
+  };
 
   return (
-    <>
-      <button onClick={toggleModal} className="btn-modal">
-        Open
-      </button>
-
-      {modal && (
-        <div className="modal">
-          <div onClick={toggleModal} className="overlay"></div>
-          <div className="modal-content">
-            <h2>Hello Modal</h2>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident
-              perferendis suscipit officia recusandae, eveniet quaerat assumenda
-              id fugit, dignissimos maxime non natus placeat illo iusto!
-              Sapiente dolorum id maiores dolores? Illum pariatur possimus
-              quaerat ipsum quos molestiae rem aspernatur dicta tenetur. Sunt
-              placeat tempora vitae enim incidunt porro fuga ea.
-            </p>
-            <button className="close-modal" onClick={toggleModal}>
-              CLOSE
-            </button>
-          </div>
-        </div>
+    <div>
+      {props.modal && (
+        <Modal show={props.modal} onHide={props.toggleModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>
+              Address : {props.currentCarparkAddressProp}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Total Lots :{" "}
+            {props.freeLots.length /* [0].carpark_info[0].total_lots */ === 0
+              ? "No Lots avaialble"
+              : props.freeLots[0].carpark_info[0].total_lots}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={props.toggleModal}>
+              Close
+            </Button>
+            {loggedInUser.favs === null ||
+            loggedInUser.favs.filter(
+              (item) => item.cp_no === props.currentCarparkPropNo
+            ).length < 1 ? (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  addFavourite(props.currentCarparkAddressProp);
+                }}
+              >
+                Favourite
+              </Button>
+            ) : (
+              <Button
+                variant="primary"
+                onClick={() => {
+                  removeFav();
+                }}
+              >
+                Remove Favourite
+              </Button>
+            )}
+          </Modal.Footer>
+        </Modal>
       )}
-    </>
+    </div>
   );
 }

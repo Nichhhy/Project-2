@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Gmaps from "./Components/Gmaps";
 import Login from "./Components/Login";
 import { auth } from "./firebase";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect, createContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import Signup from "./Components/Signup";
