@@ -15,7 +15,6 @@ import logo from "../logo.png";
 
 import { ref as databaseRef, set, onValue } from "firebase/database";
 
-
 const STORAGE_FILE_KEY = "images";
 
 export default function Signup(props) {
@@ -59,9 +58,7 @@ export default function Signup(props) {
           });
         });
       })
-      .then(() => {
-        writeInDb();
-      })
+
       .then(() => {
         alert("Congrats! Thank you for signing up!");
         navigate("/Gmap");
@@ -75,16 +72,6 @@ export default function Signup(props) {
         if (errorCode === "auth/email-already-in-use")
           alert("You have already signed up before! Please sign in!");
       });
-  };
-
-  const writeInDb = () => {
-    set(databaseRef(database, "users/" + loggedInUser.userID), {
-      displayName: email,
-      favourites: [],
-    }).catch((error) => {
-      console.log(error);
-      navigate("/Signup");
-    });
   };
 
   const handleSubmit = (e) => {
@@ -125,7 +112,6 @@ export default function Signup(props) {
       </Card>
 
       <Form.Group>
-        {/* <Form.Label>Sign in!</Form.Label> */}
         <Form.Control
           type="text"
           name="displayName"

@@ -33,15 +33,18 @@ export default function Login(props) {
             userID: userCredential.user.uid,
             favs: data,
           });
+          navigate("/gmap");
         });
       })
 
       .catch((error) => {
         const errorCode = error.code;
-
+        console.log(errorCode);
         if (errorCode === "auth/invalid-email") alert("Please sign up!");
+        if (errorCode === "auth/wrong-password") alert("Wrong Password!");
+        if (errorCode === "auth/internal-error")
+          alert("Please key in your password!");
       });
-    navigate("/gmap");
   };
 
   return (
@@ -75,8 +78,6 @@ export default function Login(props) {
       <Button variant="success" onClick={handleSignIn}>
         Sign In
       </Button>
-
-      <Outlet />
     </div>
   );
 }
