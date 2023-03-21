@@ -50,12 +50,6 @@ export default function SearchBar() {
     setModal(!modal);
   };
 
-  const handleOnSearch = (string, results) => {
-    // onSearch will have as the first callback parameter
-    // the string searched and for the second the results.
-    console.log(string, results);
-  };
-
   const handleOnSelect = (item) => {
     // the item selected
     setCurrentCarpark(item);
@@ -130,11 +124,11 @@ export default function SearchBar() {
   };
 
   return (
-    <div>
+    <div className="GmapWrapper">
+      <h4> Search for any carpark</h4>
       <ReactSearchAutocomplete
         items={carpark}
         maxResults={5}
-        onSearch={handleOnSearch}
         onSelect={handleOnSelect}
         styling={{ zIndex: 4 }}
         autoFocus

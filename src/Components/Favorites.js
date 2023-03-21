@@ -1,11 +1,9 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { ref as databaseRef, set } from "firebase/database";
 import { database } from "../firebase";
 import { LoginInfo } from "../App";
 import { Card, Button, Modal } from "react-bootstrap";
 import axios from "axios";
-
-const DB_USER_FAVES_KEY = "Favorites";
 
 export default function Favorites() {
   const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
@@ -54,7 +52,8 @@ export default function Favorites() {
   };
 
   return (
-    <>
+    <div>
+      <h2> List of Favourites </h2>
       {loggedInUser.favs.map((faves) => (
         <Card
           onClick={() => {
@@ -92,6 +91,6 @@ export default function Favorites() {
           </Modal.Footer>
         </Modal>
       )}
-    </>
+    </div>
   );
 }

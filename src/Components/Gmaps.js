@@ -137,14 +137,10 @@ export default function Gmaps() {
     setModal(!modal);
   };
 
-  /*   if (modal) {
-    document.body.classList.add("active-modal");
-  } else {
-    document.body.classList.remove("active-modal");
-  } */
-
   return (
-    <div>
+    <div className="GmapWrapper">
+      <h1> Maps</h1>
+      <h6> Click on the marker to see available slots!</h6>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}>
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
           {carpark.map((cp) => (

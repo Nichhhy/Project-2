@@ -49,6 +49,7 @@ export default function Login(props) {
 
   return (
     <div>
+      <h2> Login </h2>
       <Card
         style={{
           width: "22rem",
