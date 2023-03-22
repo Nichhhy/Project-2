@@ -70,7 +70,7 @@ export default function Signup(props) {
 
       .then(() => {
         alert("Congrats! Thank you for signing up!");
-        navigate("/Gmap");
+        navigate("/HowItWorks");
       })
 
       .catch((error) => {
