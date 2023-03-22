@@ -38,10 +38,9 @@ export default function EditProfile() {
           displayName: newDisplayName,
           photoURL: url,
         });
+        alert("Profile Updated!");
       });
     });
-
-    navigate("/");
   };
 
   const handleFileChange = (e) => {

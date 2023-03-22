@@ -1,5 +1,5 @@
 import { Button, Card, Form } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getDownloadURL,
@@ -26,11 +26,20 @@ export default function Signup(props) {
   const [fileInputValue, setfileInputValue] = useState("");
   const navigate = useNavigate();
   const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
+  const [disableButton, setDisableButton] = useState(true);
 
   const handleFileChange = (e) => {
     setFileInputFile(e.target.files[0]);
     setfileInputValue(e.target.value);
   };
+
+  useEffect(() => {
+    if (disableButton === true) {
+      if (displayName.length > 1 && email.length > 0 && password.length > 0) {
+        setDisableButton(false);
+      }
+    }
+  });
 
   const handleSignUp = (url) => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -114,6 +123,7 @@ export default function Signup(props) {
 
       <Form.Group>
         <Form.Control
+          required
           type="text"
           name="displayName"
           placeholder="Select your Username"
@@ -141,7 +151,7 @@ export default function Signup(props) {
           onChange={handleFileChange}
         />
       </Form.Group>
-      <Button variant="info" onClick={handleSubmit}>
+      <Button variant="info" onClick={handleSubmit} disabled={disableButton}>
         Sign up
       </Button>
     </div>

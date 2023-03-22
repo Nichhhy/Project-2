@@ -88,7 +88,7 @@ export default function Popup(props) {
           <Modal.Body>
             Total Lots :{" "}
             {props.freeLots.length /* [0].carpark_info[0].total_lots */ === 0
-              ? "No Lots avaialble"
+              ? "No info available"
               : props.freeLots[0].carpark_info[0].total_lots}
           </Modal.Body>
           <Modal.Footer>
