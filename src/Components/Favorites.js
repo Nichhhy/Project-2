@@ -9,20 +9,20 @@ const DB_USER_FAVES_KEY = "Favorites";
 
 export default function Favorites() {
   const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
-  const [show, setShow] = useState(false);
+  const [modal, setModal] = useState(false);
   const [currentCarpark, setCurrentCarpark] = useState();
   const [freeLots, setFreeLots] = useState("");
 
   const handleClose = () => {
     setCurrentCarpark("");
     setFreeLots("");
-    setShow(false);
+    setModal(false);
   };
 
   const handleShow = (faves) => {
     setCurrentCarpark(faves);
     info(faves.cp_no);
-    setShow(true);
+    setModal(true);
   };
 
   const info = (cp) => {
@@ -71,12 +71,12 @@ export default function Favorites() {
         </Card>
       ))}
 
-      {show && (
-        <Modal show={show} onHide={handleClose} animation={false} centered>
+      {modal && (
+        <Modal show={modal} onHide={handleClose} animation={false} centered>
           <Modal.Header closeButton>
-            <Modal.Title>{currentCarpark.address}</Modal.Title>
+            <Modal.Title>Address : {currentCarpark.address}</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Lots available: {freeLots}</Modal.Body>
+          <Modal.Body>Total Lots : {freeLots}</Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
               Close
