@@ -1,43 +1,24 @@
-import { Card, Col, Container } from "react-bootstrap";
-import { Outlet } from "react-router-dom";
-import { LoginInfo } from "../App";
-import { useContext, useState, useEffect } from "react";
-import SearchBar from "./SearchBar";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { auth } from "../firebase";
 
-import Favorites from "./Favorites";
-import guide1 from "../guide1.png";
-import guide2 from "../guide2.png";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function HomePage() {
-  const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate("/Favourites");
+      }
+    });
+  }, []);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <SearchBar />
-        <Container className="cards">
-          <Card
-            style={{
-              width: "15rem",
-              color: "#474747",
-            }}
-          >
-            <Card.Img src={guide1} />
-          </Card>
-          <Card
-            style={{
-              width: "15rem",
-              color: "#474747",
-            }}
-          >
-            <Card.Img src={guide2} />
-          </Card>
-        </Container>
-
-        <Outlet />
-
-        {loggedInUser.favs ? <Favorites /> : null}
-      </header>
+    <div>
+      <h1>Welcome! </h1>
+      <h5>please sign in or login</h5>
     </div>
   );
 }

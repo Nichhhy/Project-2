@@ -2,6 +2,14 @@
   text-align: center;
   background-color: #282c34;
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+.GmapWrapper {
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .App-logo {
@@ -66,4 +74,7 @@
   border-radius: 50px;
   justify-content: center;
   border-color: #e73c3e;
+}
+.white-content {
+  background: #e4e4e4;
 }

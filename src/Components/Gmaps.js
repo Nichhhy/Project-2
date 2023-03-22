@@ -1,10 +1,9 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import SVY21 from "./SVY21";
 import axios from "axios";
-import { onChildAdded, ref as databaseRef, set } from "firebase/database";
+import { onChildAdded, ref as databaseRef } from "firebase/database";
 import { database } from "../firebase";
-import { LoginInfo } from "../App";
 import Popup from "./Popup";
 
 const DB_IMAGE_KEY = "Carparks";
@@ -12,15 +11,14 @@ const DB_IMAGE_KEY = "Carparks";
 export default function Gmaps() {
   // Initialization
   var cv = new SVY21();
-  const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
   const [carpark, setCarpark] = useState([]);
-  const [carparkInfo, setCarparkInfo] = useState([]);
   const [center, setCenter] = useState({
     lat: 1.362099,
     lng: 103.763447,
   });
   const [currentCarpark, setCurrentCarpark] = useState([]);
   const [modal, setModal] = useState(false);
+
   const [freeLots, setFreeLots] = useState("");
 
   useEffect(() => {
@@ -70,7 +68,9 @@ export default function Gmaps() {
   };
 
   return (
-    <div>
+    <div className="GmapWrapper">
+      <h1> Maps</h1>
+      <h6> Click on the marker to see available slots!</h6>
       <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY}>
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
           {carpark.map((cp) => (

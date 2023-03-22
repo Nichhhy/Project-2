@@ -1,14 +1,13 @@
 import React from "react";
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import { database } from "../firebase";
 import { LoginInfo } from "../App";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-import { onChildAdded, ref as databaseRef, set } from "firebase/database";
+import { ref as databaseRef, set } from "firebase/database";
 
 export default function Popup(props) {
-  const [modal, setModal] = useState(false);
   const { loggedInUser, setLoggedInUser } = useContext(LoginInfo);
 
   const addFavourite = (cpAddress) => {
@@ -76,16 +75,6 @@ export default function Popup(props) {
       favs: newArrOfFavs,
     });
   };
-
-  const toggleModal = () => {
-    setModal(!modal);
-  };
-
-  if (modal) {
-    document.body.classList.add("active-modal");
-  } else {
-    document.body.classList.remove("active-modal");
-  }
 
   return (
     <div>

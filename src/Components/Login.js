@@ -33,7 +33,7 @@ export default function Login(props) {
             userID: userCredential.user.uid,
             favs: data,
           });
-          navigate("/gmap");
+          navigate("/Favourites");
         });
       })
 
@@ -49,6 +49,7 @@ export default function Login(props) {
 
   return (
     <div>
+      <h2> Login </h2>
       <Card
         style={{
           width: "22rem",

@@ -98,6 +98,7 @@ export default function Signup(props) {
 
   return (
     <div>
+      <h2> Sign Up </h2>
       <Card
         style={{
           width: "22rem",

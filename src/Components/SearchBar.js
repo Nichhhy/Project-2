@@ -1,17 +1,18 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { database } from "../firebase";
+
 import axios from "axios";
 import Popup from "./Popup";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
-import { onChildAdded, ref as databaseRef, set } from "firebase/database";
+import { onChildAdded, ref as databaseRef } from "firebase/database";
 const DB_IMAGE_KEY = "Carparks";
 
 export default function SearchBar() {
   const [carpark, setCarpark] = useState([]);
   const [modal, setModal] = useState(false);
   const [currentCarpark, setCurrentCarpark] = useState({});
-  const [freeLots, setFreeLots] = useState([]);
+  const [freeLots, setFreeLots] = useState("");
 
   useEffect(() => {
     const messagesRef = databaseRef(database, DB_IMAGE_KEY);
@@ -46,12 +47,6 @@ export default function SearchBar() {
     setModal(!modal);
   };
 
-  const handleOnSearch = (string, results) => {
-    // onSearch will have as the first callback parameter
-    // the string searched and for the second the results.
-    console.log(string, results);
-  };
-
   const handleOnSelect = (item) => {
     // the item selected
     setCurrentCarpark(item);
@@ -60,11 +55,11 @@ export default function SearchBar() {
   };
 
   return (
-    <div>
+    <div className="GmapWrapper">
+      <h4> Search for any carpark</h4>
       <ReactSearchAutocomplete
         items={carpark}
         maxResults={5}
-        onSearch={handleOnSearch}
         onSelect={handleOnSelect}
         styling={{ zIndex: 4 }}
         autoFocus
